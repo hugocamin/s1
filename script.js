@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         elementObserver.observe(el);
     });
 
-    // 4. EFEITO 3D TILT NOS CARDS DE SERVIÇO
+    // 4. EFEITO 3D TILT NOS CARDS DE SERVIÇO (SOMBRA CORRIGIDA)
     const tiltElements = document.querySelectorAll('.tilt-effect');
 
     tiltElements.forEach(el => {
@@ -62,20 +62,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
         el.addEventListener('mousemove', (e) => {
             const { layerX, layerY } = e;
-            const yRotation = ((layerX - width / 2) / width) * 15;
-            const xRotation = ((layerY - height / 2) / height) * -15;
+            const yRotation = ((layerX - width / 2) / width) * 10; // Reduzido
+            const xRotation = ((layerY - height / 2) / height) * -10; // Reduzido
 
             const string = `
                 perspective(1000px)
-                scale(1.03)
+                scale(1.04)
                 rotateX(${xRotation}deg)
                 rotateY(${yRotation}deg)`;
             
             el.style.transform = string;
+            // << CORREÇÃO: Sombra mais sutil para fundo claro
+            el.style.boxShadow = '0 20px 40px rgba(0,0,0,0.12)';
         });
 
         el.addEventListener('mouseout', () => {
             el.style.transform = 'perspective(1000px) scale(1) rotateX(0) rotateY(0)';
+            // << CORREÇÃO: Reset da sombra
+            el.style.boxShadow = '0 5px 15px rgba(0,0,0,0.04)';
         });
     });
 
@@ -88,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const submitButton = form.querySelector('button[type="submit"]');
             const formData = new FormData(form);
+            const originalButtonText = submitButton.innerHTML;
             
             submitButton.disabled = true;
             submitButton.innerHTML = `<span>Enviando...</span> <i class="fas fa-spinner fa-spin"></i>`;
@@ -99,13 +104,14 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => {
                 submitButton.disabled = false;
-                submitButton.innerHTML = `<span>Enviar Mensagem</span>`; // Reset button text
+                submitButton.innerHTML = originalButtonText;
 
                 if (response.ok) {
                     form.reset();
                     if(statusElement) {
                         statusElement.innerHTML = "Mensagem enviada com sucesso!";
                         statusElement.style.color = "#28a745";
+                        statusElement.style.display = 'block';
                     }
                 } else {
                     throw new Error('Network response was not ok.');
@@ -113,10 +119,11 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 submitButton.disabled = false;
-                submitButton.innerHTML = `<span>Enviar Mensagem</span>`;
+                submitButton.innerHTML = originalButtonText;
                 if(statusElement) {
                     statusElement.innerHTML = "Ocorreu um erro. Tente novamente.";
                     statusElement.style.color = "#dc3545";
+                    statusElement.style.display = 'block';
                 }
             });
         });
@@ -222,7 +229,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Inicia o formulário
         updateFormSteps();
         updateProgressBar();
     }
