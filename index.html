@@ -40,8 +40,7 @@
     <header id="main-header">
         <nav class="container">
             <a href="#" class="logo">
-                <img src="logopreto.png" alt="S1 Transportes Logo" width="135" height="50" class="logo-default">
-                <img src="logopreto.png" alt="S1 Transportes Logo" width="135" height="50" class="logo-scrolled">
+                <img src="logopreto.png" alt="S1 Transportes Logo" width="135" height="50">
             </a>
     
             <ul class="nav-links">
@@ -98,7 +97,7 @@
             </div>
         </section>
 
-        <!-- A classe 'section-dark' foi removida desta seção -->
+
         <section id="servicos">
             <div class="container animate-on-scroll">
                  <h2 class="section-title">Nossos <span class="highlight">Serviços</span></h2>
@@ -114,7 +113,7 @@
                         <div class="card-content">
                             <i class="fas fa-box-open"></i>
                             <h3>Carga Fracionada</h3>
-                            <p>Ideal para a Grande SP, otimizando custos de pequenas remessas.</p>
+                            <p>Ideal para a Grande Campinas, otimizando custos de pequenas remessas.</p>
                         </div>
                     </div>
                     <div class="servico-card tilt-effect">
@@ -160,7 +159,6 @@
                         <h3>CARROCERIA</h3>
                         <ul>
                            <li><i class="fas fa-check"></i> Aberta</li>
-                            <li><i class="fas fa-check"></i> Baú</li>
                             <li><i class="fas fa-check"></i> Sider</li>
                         </ul>
                     </div>
@@ -180,17 +178,24 @@
                         <div class="progress-step" data-title="Carga">3</div>
                     </div>
 
-                    <form id="cotacaoForm" action="https://formspree.io/f/mjkobzpk" method="POST">
+                    <form id="cotacaoForm" action="https://formspree.io/f/mjkobzpk" method="POST" novalidate>
                         
                         <div class="form-step active">
                             <h3 class="step-title">Dados do Remetente</h3>
                             <div class="form-grid">
-                                <div class="form-group"><input type="text" name="remetente_empresa" required><label>Empresa/Nome *</label></div>
-                                <div class="form-group"><input type="text" name="remetente_contato" required><label>Pessoa de Contato *</label></div>
-                                <div class="form-group"><input type="tel" name="remetente_telefone" required><label>Telefone *</label></div>
-                                <div class="form-group"><input type="email" name="remetente_email" required><label>E-mail *</label></div>
-                                <div class="form-group"><input type="text" name="remetente_cep" required><label>CEP de Coleta *</label></div>
-                                <div class="form-group"><input type="text" name="remetente_cidade" required><label>Cidade *</label></div>
+                                <div class="form-group"><input type="text" id="remetente_empresa" name="remetente_empresa" required placeholder=" "><label for="remetente_empresa">Empresa/Nome *</label></div>
+                                <div class="form-group"><input type="text" id="remetente_contato" name="remetente_contato" required placeholder=" "><label for="remetente_contato">Pessoa de Contato *</label></div>
+                                <div class="form-group"><input type="tel" id="remetente_telefone" name="remetente_telefone" required placeholder=" " maxlength="15"><label for="remetente_telefone">Telefone *</label></div>
+                                <div class="form-group"><input type="email" id="remetente_email" name="remetente_email" required placeholder=" "><label for="remetente_email">E-mail *</label></div>
+                            </div>
+                            <hr style="border: 1px solid #f0f0f0; margin: 20px 0;">
+                            <div class="form-grid">
+                                <div class="form-group"><input type="text" id="remetente_cep" name="remetente_cep" required placeholder=" " maxlength="9"><label for="remetente_cep">CEP de Coleta *</label></div>
+                                <div class="form-group"><input type="text" id="remetente_rua" name="remetente_rua" required placeholder=" "><label for="remetente_rua">Rua/Logradouro *</label></div>
+                                <div class="form-group"><input type="text" id="remetente_numero" name="remetente_numero" required placeholder=" "><label for="remetente_numero">Número *</label></div>
+                                <div class="form-group"><input type="text" id="remetente_bairro" name="remetente_bairro" required placeholder=" "><label for="remetente_bairro">Bairro *</label></div>
+                                <div class="form-group"><input type="text" id="remetente_cidade" name="remetente_cidade" required placeholder=" "><label for="remetente_cidade">Cidade *</label></div>
+                                <div class="form-group"><input type="text" id="remetente_estado" name="remetente_estado" required placeholder=" "><label for="remetente_estado">Estado *</label></div>
                             </div>
                             <div class="form-buttons"><button type="button" class="cta-button btn-next"><span>Próximo</span> <i class="fas fa-arrow-right"></i></button></div>
                         </div>
@@ -198,10 +203,17 @@
                         <div class="form-step">
                             <h3 class="step-title">Dados do Destinatário</h3>
                             <div class="form-grid">
-                                <div class="form-group"><input type="text" name="destinatario_empresa" required><label>Empresa/Nome *</label></div>
-                                <div class="form-group"><input type="text" name="destinatario_contato"><label>Pessoa de Contato</label></div>
-                                <div class="form-group"><input type="text" name="destinatario_cep" required><label>CEP de Entrega *</label></div>
-                                <div class="form-group"><input type="text" name="destinatario_cidade" required><label>Cidade *</label></div>
+                                <div class="form-group"><input type="text" id="destinatario_empresa" name="destinatario_empresa" required placeholder=" "><label for="destinatario_empresa">Empresa/Nome *</label></div>
+                                <div class="form-group"><input type="text" id="destinatario_contato" name="destinatario_contato" placeholder=" "><label for="destinatario_contato">Pessoa de Contato</label></div>
+                            </div>
+                            <hr style="border: 1px solid #f0f0f0; margin: 20px 0;">
+                            <div class="form-grid">
+                                <div class="form-group"><input type="text" id="destinatario_cep" name="destinatario_cep" required placeholder=" " maxlength="9"><label for="destinatario_cep">CEP de Entrega *</label></div>
+                                <div class="form-group"><input type="text" id="destinatario_rua" name="destinatario_rua" required placeholder=" "><label for="destinatario_rua">Rua/Logradouro *</label></div>
+                                <div class="form-group"><input type="text" id="destinatario_numero" name="destinatario_numero" required placeholder=" "><label for="destinatario_numero">Número *</label></div>
+                                <div class="form-group"><input type="text" id="destinatario_bairro" name="destinatario_bairro" required placeholder=" "><label for="destinatario_bairro">Bairro *</label></div>
+                                <div class="form-group"><input type="text" id="destinatario_cidade" name="destinatario_cidade" required placeholder=" "><label for="destinatario_cidade">Cidade *</label></div>
+                                <div class="form-group"><input type="text" id="destinatario_estado" name="destinatario_estado" required placeholder=" "><label for="destinatario_estado">Estado *</label></div>
                             </div>
                              <div class="form-buttons">
                                 <button type="button" class="btn-prev"><i class="fas fa-arrow-left"></i> <span>Anterior</span></button>
@@ -212,12 +224,12 @@
                         <div class="form-step">
                             <h3 class="step-title">Dados da Carga</h3>
                             <div class="form-grid">
-                                <div class="form-group"><input type="text" name="carga_peso" required><label>Peso Total (Kg) *</label></div>
-                                <div class="form-group"><input type="text" name="carga_volumes" required><label>Nº de Volumes *</label></div>
-                                <div class="form-group"><input type="text" name="carga_dimensoes"><label>Dimensões (C x L x A)</label></div>
-                                <div class="form-group"><input type="text" name="carga_valor_nf" required><label>Valor da Nota Fiscal *</label></div>
+                                <div class="form-group"><input type="number" id="carga_peso" name="carga_peso" required placeholder=" "><label for="carga_peso">Peso Total (Kg) *</label></div>
+                                <div class="form-group"><input type="number" id="carga_volumes" name="carga_volumes" required placeholder=" "><label for="carga_volumes">Nº de Volumes *</label></div>
+                                <div class="form-group"><input type="text" id="carga_dimensoes" name="carga_dimensoes" placeholder=" "><label for="carga_dimensoes">Dimensões (C x L x A)</label></div>
+                                <div class="form-group"><input type="text" id="carga_valor_nf" name="carga_valor_nf" inputmode="decimal" required placeholder=" "><label for="carga_valor_nf">Valor da Nota Fiscal *</label></div>
                             </div>
-                            <div class="form-group"><textarea name="carga_observacoes" rows="3"></textarea><label>Observações / Tipo de material</label></div>
+                            <div class="form-group"><textarea id="carga_observacoes" name="carga_observacoes" rows="3" placeholder=" "></textarea><label for="carga_observacoes">Observações / Tipo de material</label></div>
                              <div class="form-buttons">
                                 <button type="button" class="btn-prev"><i class="fas fa-arrow-left"></i> <span>Anterior</span></button>
                                 <button type="submit" class="cta-button"><span>Solicitar Cotação</span> <i class="fas fa-paper-plane"></i></button>
@@ -247,15 +259,15 @@
                      <div class="contato-form">
                         <form id="contactForm" action="https://formspree.io/f/mjkobzpk" method="POST">
                             <div class="form-group">
-                                <input type="text" id="name" name="name" required>
+                                <input type="text" id="name" name="name" required placeholder=" ">
                                 <label for="name">Seu Nome</label>
                             </div>
                             <div class="form-group">
-                                <input type="email" id="email" name="email" required>
+                                <input type="email" id="email" name="email" required placeholder=" ">
                                 <label for="email">Seu E-mail</label>
                             </div>
                             <div class="form-group">
-                                <textarea id="message" name="message" rows="4" required></textarea>
+                                <textarea id="message" name="message" rows="4" required placeholder=" "></textarea>
                                 <label for="message">Sua Mensagem</label>
                             </div>
                             <button type="submit" class="cta-button">

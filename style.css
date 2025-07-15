@@ -6,6 +6,7 @@
     --accent-color-darker: #E68A0D;
     --text-light: #f5f5f5;
     --text-dark: #333;
+    --error-color: #dc3545;
     --border-radius: 12px;
     --transition-speed: 0.4s;
 }
@@ -56,7 +57,7 @@ header nav {
 
 .logo {
     position: relative;
-    height: 100px;
+    height: 120px;
     transition: height var(--transition-speed) ease-in-out;
 }
 #main-header.scrolled .logo {
@@ -66,20 +67,10 @@ header nav {
     height: 100%;
     width: auto;
     display: block;
-    transition: opacity var(--transition-speed) ease-in-out;
+    transition: filter var(--transition-speed) ease-in-out;
 }
-.logo .logo-scrolled {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
+#main-header.scrolled .logo img {
     filter: invert(1);
-}
-#main-header.scrolled .logo .logo-default {
-    opacity: 0;
-}
-#main-header.scrolled .logo .logo-scrolled {
-    opacity: 1;
 }
 
 .nav-links { list-style: none; display: flex; gap: 45px; }
@@ -117,7 +108,7 @@ header nav {
 .hero-background-animation {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('caminhao.png');
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('caminhao5.jpeg');
     background-size: cover;
     background-position: center;
     animation: kenburns 30s infinite alternate ease-in-out;
@@ -199,7 +190,7 @@ header nav {
 .nav-button span, .cta-button span { position: relative; z-index: 2; }
 
 /* --- SEÇÕES GERAIS E TÍTULOS ANIMADOS --- */
-section { padding: 120px 0; position: relative; }
+section { padding: 80px 0; position: relative; }
 .section-dark { background-color: var(--secondary-color); }
 #sobre, #servicos, #frota, #cotacao { 
     background: #f9f9f9; 
@@ -214,12 +205,6 @@ section { padding: 120px 0; position: relative; }
     text-align: center;
     margin-bottom: 25px;
     font-weight: 700;
-}
-.section-title .highlight {
-    background: linear-gradient(90deg, var(--accent-color), var(--accent-color-darker));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 .intro { 
     max-width: 800px; 
@@ -252,7 +237,7 @@ section { padding: 120px 0; position: relative; }
     padding: 30px 25px;
     text-align: center;
     border: 1px solid #e9e9e9;
-    transition: transform 0.2s, box-shadow 0.2s; /* JS vai controlar o transform */
+    transition: transform 0.2s, box-shadow 0.2s;
     transform-style: preserve-3d;
     box-shadow: 0 5px 15px rgba(0,0,0,0.04);
 }
@@ -275,7 +260,6 @@ section { padding: 120px 0; position: relative; }
 }
 
 /* --- FROTA --- */
-/* << CORREÇÃO: Usando a classe .frota-grid em vez do ID #frota-grid */
 .frota-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
 .frota-categoria { padding: 35px; border: 1px solid #eee; border-radius: var(--border-radius); background: #fafafa; transition: transform 0.3s, box-shadow 0.3s; }
 .frota-categoria:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.07); }
@@ -320,16 +304,59 @@ section { padding: 120px 0; position: relative; }
     transition: all 0.3s ease;
     pointer-events: none;
 }
-.form-group input:focus + label, .form-group textarea:focus + label,
-.form-group input:valid + label, .form-group textarea:valid + label {
+/* EFEITO FLOATING LABEL APRIMORADO */
+.form-group input:focus + label, 
+.form-group textarea:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group textarea:not(:placeholder-shown) + label {
     top: -8px; left: 0; font-size: 0.8rem; color: var(--accent-color);
 }
 #contact-form-status { margin-top: 15px; font-weight: 500; }
+
+/* Estilos para campos inválidos (Validação Suave) */
+.form-group.invalid input,
+.form-group.invalid textarea {
+    border-color: var(--error-color) !important;
+}
+.form-group.invalid label {
+    color: var(--error-color) !important;
+}
+.form-group.invalid input:focus + label, 
+.form-group.invalid textarea:focus + label,
+.form-group.invalid input:not(:placeholder-shown) + label,
+.form-group.invalid textarea:not(:placeholder-shown) + label {
+    color: var(--error-color) !important;
+}
+
 
 #contato .form-group input, #contato .form-group textarea {
     border-bottom-color: #555;
     color: var(--text-light);
 }
+
+/* --- CORREÇÃO PARA O AUTOCOMPLETE DO NAVEGADOR --- */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--text-dark) !important; /* Força a cor do nosso texto */
+    -webkit-box-shadow: 0 0 0 1000px #fff inset !important; /* Pinta o fundo de branco para cobrir a cor do navegador */
+    box-shadow: 0 0 0 1000px #fff inset !important;
+    transition: background-color 5000s ease-in-out 0s; /* Previne que o navegador mude a cor novamente */
+    font-family: 'Roboto', sans-serif; /* Garante que a fonte seja a mesma */
+    font-size: 1rem;
+}
+
+/* Garante que o formulário de contato (escuro) também funcione */
+#contato input:-webkit-autofill,
+#contato input:-webkit-autofill:hover, 
+#contato input:-webkit-autofill:focus, 
+#contato input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--text-light) !important; /* Força a cor do texto claro */
+    -webkit-box-shadow: 0 0 0 1000px var(--secondary-color) inset !important; /* Pinta o fundo com a cor da seção */
+    box-shadow: 0 0 0 1000px var(--secondary-color) inset !important;
+}
+
 
 /* --- SEÇÃO DE COTAÇÃO --- */
 .cotacao-form-container {
@@ -465,7 +492,7 @@ footer p { max-width: 600px; margin: auto; line-height: 1.8; }
     bottom: 30px;
     right: 30px;
     background-color: #25d366;
-    color: var(--white-color);
+    color: #FFF;
     border-radius: 50px;
     text-align: center;
     font-size: 30px;

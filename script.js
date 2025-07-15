@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         elementObserver.observe(el);
     });
 
-    // 4. EFEITO 3D TILT NOS CARDS DE SERVIÇO (SOMBRA CORRIGIDA)
+    // 4. EFEITO 3D TILT NOS CARDS DE SERVIÇO
     const tiltElements = document.querySelectorAll('.tilt-effect');
 
     tiltElements.forEach(el => {
@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         el.addEventListener('mousemove', (e) => {
             const { layerX, layerY } = e;
-            const yRotation = ((layerX - width / 2) / width) * 10; // Reduzido
-            const xRotation = ((layerY - height / 2) / height) * -10; // Reduzido
+            const yRotation = ((layerX - width / 2) / width) * 10;
+            const xRotation = ((layerY - height / 2) / height) * -10;
 
             const string = `
                 perspective(1000px)
@@ -72,13 +72,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 rotateY(${yRotation}deg)`;
             
             el.style.transform = string;
-            // << CORREÇÃO: Sombra mais sutil para fundo claro
             el.style.boxShadow = '0 20px 40px rgba(0,0,0,0.12)';
         });
 
         el.addEventListener('mouseout', () => {
             el.style.transform = 'perspective(1000px) scale(1) rotateX(0) rotateY(0)';
-            // << CORREÇÃO: Reset da sombra
             el.style.boxShadow = '0 5px 15px rgba(0,0,0,0.04)';
         });
     });
@@ -165,13 +163,21 @@ document.addEventListener('DOMContentLoaded', function() {
             progressBar.style.setProperty('--progress-width', `${progressPercentage}%`);
         };
 
+        // VALIDAÇÃO SUAVE COM FEEDBACK VISUAL
         nextBtns.forEach(button => {
             button.addEventListener('click', () => {
-                const currentStepFields = steps[currentStep].querySelectorAll('input[required]');
+                const currentStepFields = steps[currentStep].querySelectorAll('[required]');
                 let allValid = true;
+                
+                currentStepFields.forEach(field => {
+                     const formGroup = field.closest('.form-group');
+                    if (formGroup) formGroup.classList.remove('invalid');
+                });
+                
                 currentStepFields.forEach(field => {
                     if (!field.checkValidity()) {
-                        field.reportValidity();
+                        const formGroup = field.closest('.form-group');
+                        if (formGroup) formGroup.classList.add('invalid');
                         allValid = false;
                     }
                 });
@@ -180,6 +186,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     currentStep++;
                     updateFormSteps();
                     updateProgressBar();
+                }
+            });
+        });
+
+        // Limpa a validação visual quando o usuário começa a corrigir o campo
+        cotacaoForm.querySelectorAll('[required]').forEach(field => {
+            field.addEventListener('input', () => {
+                if(field.checkValidity()){
+                    const formGroup = field.closest('.form-group');
+                    if(formGroup) formGroup.classList.remove('invalid');
                 }
             });
         });
@@ -232,4 +248,128 @@ document.addEventListener('DOMContentLoaded', function() {
         updateFormSteps();
         updateProgressBar();
     }
+
+    // 7. FORMATAÇÃO AUTOMÁTICA DE CAMPOS (MÁSCARAS)
+    const phoneInput = document.getElementById('remetente_telefone');
+    const cepRemetenteInput = document.getElementById('remetente_cep');
+    const cepDestinatarioInput = document.getElementById('destinatario_cep');
+
+    // Função para formatar Telefone: (xx) xxxxx-xxxx
+    if (phoneInput) {
+        phoneInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+            value = value.substring(0, 11); // Limita a 11 dígitos (DDD + 9 dígitos)
+
+            let formattedValue = '';
+            if (value.length > 0) {
+                formattedValue = '(' + value.substring(0, 2);
+            }
+            if (value.length > 2) {
+                formattedValue += ') ' + value.substring(2, 7);
+            }
+            if (value.length > 7) {
+                formattedValue += '-' + value.substring(7);
+            }
+            
+            e.target.value = formattedValue;
+        });
+    }
+
+    // Função reutilizável para formatar CEP: xxxxx-xxx
+    const cepFormatter = (e) => {
+        let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+        value = value.substring(0, 8); // Limita a 8 dígitos
+
+        if (value.length > 5) {
+            value = value.substring(0, 5) + '-' + value.substring(5);
+        }
+        
+        e.target.value = value;
+    };
+
+    if (cepRemetenteInput) {
+        cepRemetenteInput.addEventListener('input', cepFormatter);
+    }
+    if (cepDestinatarioInput) {
+        cepDestinatarioInput.addEventListener('input', cepFormatter);
+    }
+
+    // 8. API DE CONSULTA DE CEP (VIACEP)
+    const setupCepApi = (cepInput, ruaInput, bairroInput, cidadeInput, estadoInput, numeroInput) => {
+        if (!cepInput) return; // Garante que o código não quebre se o campo não existir
+
+        cepInput.addEventListener('blur', async (e) => { // 'blur' é acionado quando o usuário sai do campo
+            const cep = e.target.value.replace(/\D/g, ''); // Limpa o CEP, deixando apenas números
+
+            if (cep.length !== 8) {
+                return; // Não faz nada se o CEP não tiver 8 dígitos
+            }
+
+            // Mostra um estado de carregamento para o usuário
+            ruaInput.value = "Carregando...";
+            bairroInput.value = "Carregando...";
+            cidadeInput.value = "Carregando...";
+            estadoInput.value = "Carregando...";
+
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await response.json();
+
+                if (data.erro) {
+                    // Se o CEP for inválido, limpa os campos para preenchimento manual
+                    alert("CEP não encontrado. Por favor, preencha o endereço manualmente.");
+                    ruaInput.value = "";
+                    bairroInput.value = "";
+                    cidadeInput.value = "";
+                    estadoInput.value = "";
+                    ruaInput.focus(); // Foca na rua para preenchimento manual
+                    return;
+                }
+
+                // Preenche os campos com os dados da API
+                ruaInput.value = data.logradouro;
+                bairroInput.value = data.bairro;
+                cidadeInput.value = data.localidade;
+                estadoInput.value = data.uf;
+
+                // Força o efeito de label flutuante nos campos preenchidos
+                [ruaInput, bairroInput, cidadeInput, estadoInput].forEach(input => {
+                    const label = input.nextElementSibling;
+                    if (label) label.classList.add('active-float'); // Adiciona uma classe para ativar
+                });
+
+                // Move o foco para o campo de número, que é o próximo passo lógico
+                numeroInput.focus();
+                
+            } catch (error) {
+                console.error("Erro ao buscar CEP:", error);
+                alert("Ocorreu um erro ao buscar o CEP. Tente novamente.");
+                // Limpa os campos em caso de erro de rede
+                ruaInput.value = "";
+                bairroInput.value = "";
+                cidadeInput.value = "";
+                estadoInput.value = "";
+            }
+        });
+    };
+
+    // Configura a API para o formulário do REMETENTE
+    setupCepApi(
+        document.getElementById('remetente_cep'),
+        document.getElementById('remetente_rua'),
+        document.getElementById('remetente_bairro'),
+        document.getElementById('remetente_cidade'),
+        document.getElementById('remetente_estado'),
+        document.getElementById('remetente_numero')
+    );
+
+    // Configura a API para o formulário do DESTINATÁRIO
+    setupCepApi(
+        document.getElementById('destinatario_cep'),
+        document.getElementById('destinatario_rua'),
+        document.getElementById('destinatario_bairro'),
+        document.getElementById('destinatario_cidade'),
+        document.getElementById('destinatario_estado'),
+        document.getElementById('destinatario_numero')
+    );
 });
